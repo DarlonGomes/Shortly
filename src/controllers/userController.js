@@ -20,15 +20,17 @@ export const signUpHandler = async (req,res) => {
         }
         
         delete user.confirmPassword;
+
         const hashPassword = bcrypt.hashSync(user.password, 10);
 
         await connection.query(`
-        INSERT TO users
+        INSERT INTO users
         (name, email, password)
         VALUES
         ($1, $2, $3)`,
-        [user.name, user.email, hashPassword])
+        [user.name, user.email, hashPassword]);
 
+        return res.sendStatus(201);
     } catch (error) {
         return res.sendStatus(500);
     }
@@ -36,21 +38,17 @@ export const signUpHandler = async (req,res) => {
 
 export const signInHandler = async (req,res) => {
     const login = res.locals.cleanData;
-    try {
+   
         const {rows: user} = await connection.query(`
         SELECT * FROM users
         WHERE email = $1`,
         [login.email]);
-
-        if(user[0] && bcrypt.compareSync(login.password, user.password)){
-            const token = jwt.token({id: user.id}, SECRET, {expiresIn: "3d"});
-            return res.json({token, name: user.name}).status(200);
+        if(user[0] && bcrypt.compareSync(login.password, user[0].password)){
+            const token = jwt.sign({id: user[0].id}, SECRET, {expiresIn: "3d"});
+            return res.json({token, name: user[0].name}).status(200);
         }else{
             return res.sendStatus(401);
         }
-    } catch (error) {
-        return res.sendStatus(500);
-    }
 }
 
 export const userDataHandler = async (req,res) => {
