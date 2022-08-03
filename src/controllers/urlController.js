@@ -34,11 +34,24 @@ export const urlSearcher = async (req, res) => {
     } catch (error) {
         return res.sendStatus(500);
     }
-
 };
 
 export const urlRedirector = async (req, res) => {
-
+    const {shortUrl} = req.params;
+    try {
+        const {rows: body} = await connection.query(`
+        SELECT url FROM urls WHERE "shortUrl" = $1
+        `, [shortUrl]);
+        if(body.length === 0) return res.sendStatus(404);
+        await connection.query(`
+        UPDATE urls 
+        SET views = views + 1
+        WHERE "shortUrl" = $1
+        `, [shortUrl])
+        return res.redirect(body[0].url);
+    } catch (error) {
+        return res.sendStatus(500);
+    }
 };
 
 export const urlDelete = async (req, res) => {
