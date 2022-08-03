@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import rankRouter from './routers/rankRouter.js';
 import userRouter from './routers/userRouter.js';
-import urlRouter from './router/urlRouter.js';
+import urlRouter from './routers/urlRouter.js';
 
 dotenv.config();
 
