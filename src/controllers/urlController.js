@@ -47,7 +47,7 @@ export const urlRedirector = async (req, res) => {
         UPDATE urls 
         SET views = views + 1
         WHERE "shortUrl" = $1
-        `, [shortUrl])
+        `, [shortUrl]);
         return res.redirect(body[0].url);
     } catch (error) {
         return res.sendStatus(500);
@@ -62,7 +62,6 @@ export const urlDelete = async (req, res) => {
         SELECT * FROM urls 
         WHERE id = $1
         `,[id]);
-        
         if(body.length === 0) return res.sendStatus(404);
         if(body[0].userId !== userId) return res.sendStatus(401);
         await connection.query(`

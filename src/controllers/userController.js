@@ -52,5 +52,23 @@ export const signInHandler = async (req,res) => {
 }
 
 export const userDataHandler = async (req,res) => {
-    
+    const {id} = res.locals.user;
+
+    const {rows: body} = await connection.query(`
+    SELECT users.id AS id,
+    users.name AS name,
+    SUM(urls.views) as "visitCount",
+    json_agg(json_build_object(
+        'id', urls.id,
+        'shortUrl', urls."shortUrl",
+        'url', urls.url,
+        'visitCount', urls.views
+    ))
+    FROM users
+    LEFT JOIN urls ON urls."userId" = users.id
+    WHERE users.id = $1
+    GROUP BY users.id
+    `,[2]);
+    if(body.length == 0) return res.sendStatus(404);
+    return res.send(body[0]).status(200);
 }
