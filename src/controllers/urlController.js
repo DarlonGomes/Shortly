@@ -55,5 +55,22 @@ export const urlRedirector = async (req, res) => {
 };
 
 export const urlDelete = async (req, res) => {
-
+    const userId = res.locals.user.id;
+    const {id} = req.params;
+    try {
+        const {rows: body} = await connection.query(`
+        SELECT * FROM urls 
+        WHERE id = $1
+        `,[id]);
+        
+        if(body.length === 0) return res.sendStatus(404);
+        if(body[0].userId !== userId) return res.sendStatus(401);
+        await connection.query(`
+        DELETE FROM urls
+        WHERE id = $1
+        `,[id]);
+        return res.sendStatus(204);
+    } catch (error) {
+        return res.sendStatus(500);
+    }
 };
