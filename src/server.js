@@ -15,4 +15,4 @@ app.use(rankRouter);
 app.use(userRouter);
 app.use(urlRouter);
 
-app.listen(process.env.PORT || 5000);
+app.listen(process.env.PORT);
