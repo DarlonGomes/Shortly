@@ -5,12 +5,12 @@ export const checkRank = async () => {
     SELECT 
     users.id AS id,
     users.name AS name,
-    COUNT(urls.url) AS "linksCount",
-    SUM(urls.views) AS "visitCount"
+    COALESCE(COUNT(urls.url), 0) AS "linksCount",
+    COALESCE(SUM(urls.views), 0) AS "visitCount"
     FROM users
     LEFT JOIN urls ON urls."userId" = users.id
     GROUP BY users.id
-    ORDER BY "visitCount" 
+    ORDER BY "visitCount" DESC
     LIMIT 10
     `);
     return rows
