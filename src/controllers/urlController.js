@@ -9,7 +9,7 @@ export const urlShortener = async (req, res) => {
    
         const shortUrl = nanoid();
         await urlHandler.shortener(url, shortUrl, id);
-        return res.send({shortUrl: shortUrl}).status(201);
+        return res.status(201).send({shortUrl: shortUrl});
     
 }
 
