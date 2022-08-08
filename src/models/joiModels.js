@@ -9,7 +9,7 @@ export const signUpSchema = Joi.object({
     name: Joi.string().min(1).trim().required(),
     email: Joi.string().email({ tlds: { allow: false } }).required(),
     password: Joi.string().min(1).required(),
-    confirmPassword: Joi.ref('password')
+    confirmPassword: Joi.string().valid(Joi.ref('password')).required()
 });
 
 export const shortenSchema = Joi.object({
