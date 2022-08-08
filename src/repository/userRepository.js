@@ -44,7 +44,9 @@ export const userHandler = {
             'shortUrl', urls."shortUrl",
             'url', urls.url,
             'visitCount', urls.views
-        )) as "shortenedUrls"
+        )
+        ORDER BY urls.views DESC
+        ) as "shortenedUrls"
         FROM users
         LEFT JOIN urls ON urls."userId" = users.id
         WHERE users.id = $1
